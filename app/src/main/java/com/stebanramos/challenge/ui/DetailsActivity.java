@@ -22,7 +22,9 @@ import com.stebanramos.challenge.models.Product;
 import com.stebanramos.challenge.viewModels.DetailsViewModel;
 import com.stebanramos.challenge.viewModels.SearchViewModel;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -51,6 +53,13 @@ public class DetailsActivity extends AppCompatActivity {
             }
         });
 
+        detailsViewModel.getDescription(this).observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String liveDesc) {
+                binding.tvDescription.setText(liveDesc);
+            }
+        });
+
     }
 
     private void configView() {
@@ -61,8 +70,31 @@ public class DetailsActivity extends AppCompatActivity {
                     .asBitmap()
                     .load(item.getPíctures().getJSONObject(0).get("secure_url"))
                     .into(binding.ivItem);
+
             binding.tvPrice.setText(item.getPrice());
-            binding.tvAttributes.setText(item.getAttributes().toString());
+
+            JSONArray attributes = item.getAttributes();
+
+            String caracteristicas = "";
+            String others = "";
+            for (int i = 0; i < attributes.length(); i++) {
+
+                JSONObject json = attributes.getJSONObject(i);
+                Log.d(TAG, "configView() id " + json.get("value_id"));
+
+                if (!json.isNull("value_id")){
+                    others += json.get("name") + ": " + json.get("value_name") + "\n";
+                }else{
+
+                    caracteristicas += json.get("name") + ": " + json.get("value_name") + "\n";
+                }
+
+            }
+
+            binding.tvAttributes.setText(caracteristicas);
+            binding.tvOtherAttributes.setText(others);
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

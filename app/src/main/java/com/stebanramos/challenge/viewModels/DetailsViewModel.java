@@ -17,6 +17,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.stebanramos.challenge.models.Item;
 import com.stebanramos.challenge.utilies.VolleySingleton;
 
@@ -32,6 +33,7 @@ public class DetailsViewModel extends ViewModel {
 
     private RequestQueue mQueue;
     private MutableLiveData<Item> muItem;
+    private MutableLiveData<String> description;
 
     private String id, title, price;
     private JSONArray pictures, attributes;
@@ -45,6 +47,13 @@ public class DetailsViewModel extends ViewModel {
         return muItem;
     }
 
+    public LiveData<String> getDescription(Context context) {
+        if (description == null) {
+            description = new MutableLiveData<>();
+            loadDescription(context);
+        }
+        return description;
+    }
 
     private void loadData(final Context context) {
         mQueue = VolleySingleton.getInstance(context).getRequestQueue();
@@ -60,8 +69,6 @@ public class DetailsViewModel extends ViewModel {
                     @Override
                     public void onResponse(JSONArray response) {
                         try {
-                            //progressBar.setVisibility(View.GONE);
-                            //get the array called results
                             Log.d(TAG, "loadData() onResponse " + response);
                             JSONObject results = response.getJSONObject(0).getJSONObject("body");
                             Log.d(TAG, "loadData() onResponse " + results);
@@ -74,6 +81,42 @@ public class DetailsViewModel extends ViewModel {
 
                             item = new Item(id, title, pictures, price, attributes);
                             muItem.setValue(item);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //just print the error and notify the user for some technical problems
+                        error.printStackTrace();
+                        Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        mQueue.add(request);
+    }
+
+    private void loadDescription(final Context context) {
+        mQueue = VolleySingleton.getInstance(context).getRequestQueue();
+        Uri baseUri = Uri.parse(SEARCH_ITEM_URL + "MCO599728938/description");
+        Uri.Builder builder = baseUri.buildUpon();
+
+        //builder.appendQueryParameter("", "MCO599728938/description");
+
+        Log.d(TAG, "loadDescription() uri " + builder);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, builder.toString(), null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Log.d(TAG, "loadData() onResponse " + response);
+                            String results = response.get("plain_text").toString();
+                            Log.d(TAG, "loadData() onResponse " + results);
+                            description.setValue(results);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
