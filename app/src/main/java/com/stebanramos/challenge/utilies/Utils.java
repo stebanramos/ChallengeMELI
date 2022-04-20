@@ -12,19 +12,18 @@ import androidx.appcompat.app.AlertDialog;
 
 public class Utils {
 
-    private Context context;
-    private final String TAG = "Utils";
+    private static final String TAG = "Utils";
 
-    public void printtCatch(Exception e, String funcion, String activity) {
+    public static void printtCatch(Exception e, String funcion, String activity) {
         Log.i(activity, funcion);
         e.printStackTrace();
     }
 
     // Mensaje Sin conexión a internet (Redirecciona hasta ajustes de red ACTION_WIFI_SETTINGS)
-    public void Request_Internet(Context cont) {
+    public static void Request_Internet(Context context) {
         Log.i(TAG, "Network_Connected");
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(cont);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage("Conéctese a una red");
         builder.setTitle("Sin conexión a internet");
 
@@ -41,7 +40,7 @@ public class Utils {
     }
 
     // Estado Internet(Conectado a la red (true) sin conexión (false))
-    public Boolean Network_Connected(Context ctx) {
+    public static Boolean Network_Connected(Context ctx) {
         Log.i(TAG, "Network_Connected");
 
         ConnectivityManager conectionManager = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);

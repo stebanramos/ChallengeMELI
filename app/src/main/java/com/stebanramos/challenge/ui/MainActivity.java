@@ -16,17 +16,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.bumptech.glide.util.Util;
 import com.stebanramos.challenge.BuildConfig;
 import com.stebanramos.challenge.databinding.ActivityMainBinding;
 import com.stebanramos.challenge.utilies.Preferences;
+import com.stebanramos.challenge.utilies.Utils;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-
+    private Context context;
     private EditText etSearch;
     private ActivityMainBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,11 +39,11 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, " onCreate()");
 
-
+        context = this;
         configView();
     }
 
-    private void configView(){
+    private void configView() {
         Log.d(TAG, " configView()");
 
         etSearch = binding.etSearch;
@@ -49,12 +52,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                    Preferences.Set_str(MainActivity.this, "search", etSearch.getText().toString());
-                    Log.d(TAG, "configView() search " + etSearch.getText());
 
-                    startActivity(intent);
-                    return true;
+                    if (Utils.Network_Connected(MainActivity.this)) {
+                        Intent intent = new Intent(context, SearchActivity.class);
+                        Preferences.Set_str(MainActivity.this, "search", etSearch.getText().toString());
+                        Log.d(TAG, "configView() search " + etSearch.getText());
+
+                        startActivity(intent);
+
+                        return true;
+                    } else {
+                        Utils.Request_Internet(context);
+                    }
+
                 }
                 return false;
             }
