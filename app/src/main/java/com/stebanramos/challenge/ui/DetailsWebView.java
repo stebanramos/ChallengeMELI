@@ -13,18 +13,19 @@ import com.stebanramos.challenge.databinding.ActivitySearchBinding;
 import com.stebanramos.challenge.databinding.WebViewDetailsBinding;
 
 public class DetailsWebView extends AppCompatActivity {
-    private static final String currentActivity = DetailsWebView.class.getSimpleName();
+    private final String TAG = "DetailsWebView";
 
     private WebViewDetailsBinding binding;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         binding = WebViewDetailsBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
 
-        Log.d("d_funciones", currentActivity + " onCreate()");
+        Log.d(TAG, " onCreate()");
 
         WebView webView = binding.webview;
 

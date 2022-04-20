@@ -28,6 +28,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
     private ArrayList<Product> productsList;
     private Context context;
     private OnItemClickListener mListener;
+    private final String TAg = "";
 
     public interface OnItemClickListener{
         void onItemClick(int position , Product product , ImageView imageView);
@@ -52,6 +53,8 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
 
     @Override
     public void onBindViewHolder(@NonNull final ProductsViewHolder productsViewHolder, int position) {
+
+
         Product currentItem = productsList.get(position);
 
         String productImageUrl = currentItem.getThumbnail();
@@ -94,6 +97,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
 
         public ProductsViewHolder(@NonNull View itemView , final OnItemClickListener listener) {
             super(itemView);
+
             iv_products_image = itemView.findViewById(R.id.iv_products_image);
             tv_products_tittle = itemView.findViewById(R.id.tv_products_tittle);
             tv_products_price = itemView.findViewById(R.id.tv_products_price);

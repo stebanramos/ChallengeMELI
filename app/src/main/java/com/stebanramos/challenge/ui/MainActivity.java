@@ -34,10 +34,15 @@ public class MainActivity extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
+        Log.d(TAG, " onCreate()");
+
+
         configView();
     }
 
     private void configView(){
+        Log.d(TAG, " configView()");
+
         etSearch = binding.etSearch;
         etSearch.requestFocus();
         etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {

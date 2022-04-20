@@ -36,6 +36,9 @@ public class SearchActivity extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
+        Log.d(TAG, " onCreate()");
+
+
         initRecyclerView();
         SearchViewModel searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
         searchViewModel.setSearchInput(Preferences.Get_str(this, "search"));
@@ -59,11 +62,17 @@ public class SearchActivity extends AppCompatActivity {
 
 
     private void initRecyclerView() {
+
+        Log.d(TAG, " initRecyclerView()");
+
         binding.searchRecyclerView.setHasFixedSize(true);
         binding.searchRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     private void setUpRecyclerView(final List<Product> products){
+
+        Log.d(TAG, " setUpRecyclerView()");
+
         //then we set up the adapter with our filled list and set it to the recycler view
         ProductsAdapter adapter = new ProductsAdapter(SearchActivity.this, (ArrayList<Product>) products);
         binding.searchRecyclerView.setAdapter(adapter);

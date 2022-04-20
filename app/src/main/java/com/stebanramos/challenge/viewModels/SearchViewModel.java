@@ -39,8 +39,9 @@ public class SearchViewModel extends ViewModel {
     public MutableLiveData<String> searchInput = new MutableLiveData<>();
     private MutableLiveData<List<Product>> muProductList;
 
-
     public LiveData<List<Product>> getData(Context context) {
+        Log.d(TAG, "getData()");
+
         if (muProductList == null) {
             muProductList = new MutableLiveData<>();
             loadData(context);
@@ -49,6 +50,8 @@ public class SearchViewModel extends ViewModel {
     }
 
     public void setSearchInput(String result) {
+        Log.d(TAG, "setSearchInput()");
+
         searchInput.setValue(result);
     }
 

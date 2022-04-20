@@ -63,6 +63,7 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     private void configView() {
+        Log.i(TAG, "configView");
 
         try {
             binding.tvTittle.setText(item.getTitle());

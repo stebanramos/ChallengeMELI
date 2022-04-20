@@ -41,6 +41,8 @@ public class DetailsViewModel extends ViewModel {
     private Item item;
 
     public LiveData<Item> getData(Context context) {
+        Log.d(TAG, "getData()");
+
         if (muItem == null) {
             muItem = new MutableLiveData<>();
             loadData(context);
@@ -49,6 +51,8 @@ public class DetailsViewModel extends ViewModel {
     }
 
     public LiveData<String> getDescription(Context context) {
+        Log.d(TAG, "getDescription()");
+
         if (description == null) {
             description = new MutableLiveData<>();
             loadDescription(context);
