@@ -19,6 +19,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.stebanramos.challenge.models.Item;
+import com.stebanramos.challenge.utilies.Preferences;
 import com.stebanramos.challenge.utilies.VolleySingleton;
 
 import org.json.JSONArray;
@@ -60,7 +61,7 @@ public class DetailsViewModel extends ViewModel {
         Uri baseUri = Uri.parse(SEARCH_ITEM_URL);
         Uri.Builder builder = baseUri.buildUpon();
 
-        builder.appendQueryParameter("ids", "MCO599728938");
+        builder.appendQueryParameter("ids", Preferences.Get_str(context, "itemId"));
 
         Log.d(TAG, "loadData() uri " + builder);
 
@@ -101,7 +102,7 @@ public class DetailsViewModel extends ViewModel {
 
     private void loadDescription(final Context context) {
         mQueue = VolleySingleton.getInstance(context).getRequestQueue();
-        Uri baseUri = Uri.parse(SEARCH_ITEM_URL + "MCO599728938/description");
+        Uri baseUri = Uri.parse(SEARCH_ITEM_URL + Preferences.Get_str(context, "itemId")+"/description");
         Uri.Builder builder = baseUri.buildUpon();
 
         //builder.appendQueryParameter("", "MCO599728938/description");

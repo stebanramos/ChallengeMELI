@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import com.stebanramos.challenge.adapters.ProductsAdapter;
 import com.stebanramos.challenge.databinding.ActivitySearchBinding;
 import com.stebanramos.challenge.models.Product;
+import com.stebanramos.challenge.utilies.Preferences;
 import com.stebanramos.challenge.viewModels.SearchViewModel;
 
 import java.util.ArrayList;
@@ -36,9 +37,8 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(view);
 
         initRecyclerView();
-        Intent intent = getIntent();
         SearchViewModel searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
-        searchViewModel.setSearchInput(intent.getStringExtra("search"));
+        searchViewModel.setSearchInput(Preferences.Get_str(this, "search"));
         searchViewModel.getData(this).observe(this, new Observer<List<Product>>() {
             @Override
             public void onChanged(@Nullable List<Product> productsList) {
@@ -52,7 +52,6 @@ public class SearchActivity extends AppCompatActivity {
         searchViewModel.searchInput.observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                //searchViewModel.setSearchInput(s);
                 Log.d(TAG, "onChanged: the new search value is : " + s);
             }
         });
@@ -74,6 +73,8 @@ public class SearchActivity extends AppCompatActivity {
             public void onItemClick(int position,Product product, ImageView imageView) {
 
                 Product currentProduct = products.get(position);
+
+                Preferences.Set_str(getApplicationContext(), "itemId", currentProduct.getId());
 
                 //go Web View MELI
                 /*Product currentProduct = products.get(position);
