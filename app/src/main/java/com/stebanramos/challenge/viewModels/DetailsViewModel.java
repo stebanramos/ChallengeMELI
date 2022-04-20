@@ -19,6 +19,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.stebanramos.challenge.models.Item;
+import com.stebanramos.challenge.utilies.GsonRequest;
 import com.stebanramos.challenge.utilies.Preferences;
 import com.stebanramos.challenge.utilies.Utils;
 import com.stebanramos.challenge.utilies.VolleySingleton;
@@ -65,47 +66,42 @@ public class DetailsViewModel extends ViewModel {
         Log.d(TAG, "loadData()");
 
         try {
-            mQueue = VolleySingleton.getInstance(context).getRequestQueue();
-            Uri baseUri = Uri.parse(SEARCH_ITEM_URL);
-            Uri.Builder builder = baseUri.buildUpon();
+            VolleySingleton.getInstance(context).addToRequestQueue(
 
-            builder.appendQueryParameter("ids", Preferences.Get_str(context, "itemId"));
+                    new GsonRequest<JSONArray>(SEARCH_ITEM_URL + "ids"+ Preferences.Get_str(context, "itemId"),
+                            null,
+                            null,
+                            new Response.Listener<JSONArray>() {
+                                @Override
+                                public void onResponse(JSONArray response) {
+                                    try {
+                                        Log.d(TAG, "loadData() onResponse " + response);
+                                        JSONObject results = response.getJSONObject(0).getJSONObject("body");
+                                        Log.d(TAG, "loadData() onResponse " + results);
 
-            Log.d(TAG, "loadData() uri " + builder);
+                                        id = results.getString("id");
+                                        title = results.getString("title");
+                                        pictures = results.getJSONArray("pictures");
+                                        price = results.getString("price");
+                                        attributes = results.getJSONArray("attributes");
 
-            JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, builder.toString(), null,
-                    new Response.Listener<JSONArray>() {
-                        @Override
-                        public void onResponse(JSONArray response) {
-                            try {
-                                Log.d(TAG, "loadData() onResponse " + response);
-                                JSONObject results = response.getJSONObject(0).getJSONObject("body");
-                                Log.d(TAG, "loadData() onResponse " + results);
+                                        item = new Item(id, title, pictures, price, attributes);
+                                        muItem.setValue(item);
 
-                                id = results.getString("id");
-                                title = results.getString("title");
-                                pictures = results.getJSONArray("pictures");
-                                price = results.getString("price");
-                                attributes = results.getJSONArray("attributes");
-
-                                item = new Item(id, title, pictures, price, attributes);
-                                muItem.setValue(item);
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.d(TAG, "Error Volley:" + error.getMessage());
+                                }
                             }
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            //just print the error and notify the user for some technical problems
-                            error.printStackTrace();
-                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    )
 
-            mQueue.add(request);
+            );
         } catch (Exception e) {
             Utils.printtCatch(e, "loadData", TAG);
         }
