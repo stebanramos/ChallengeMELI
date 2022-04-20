@@ -23,32 +23,45 @@ public class Utils {
     public static void Request_Internet(Context context) {
         Log.i(TAG, "Network_Connected");
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage("Conéctese a una red");
-        builder.setTitle("Sin conexión a internet");
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setMessage("Conéctese a una red");
+            builder.setTitle("Sin conexión a internet");
 
-        builder.setNeutralButton("Conectar", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        context.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+            builder.setNeutralButton("Conectar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            context.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                        }
                     }
-                }
-        );
+            );
 
-        AlertDialog dialog = builder.create();
-        dialog.show();
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        } catch (Exception e) {
+            printtCatch(e, "Request_Internet", TAG);
+        }
+
     }
 
     // Estado Internet(Conectado a la red (true) sin conexión (false))
     public static Boolean Network_Connected(Context ctx) {
         Log.i(TAG, "Network_Connected");
+        boolean isConnected;
+        try {
+            ConnectivityManager conectionManager = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = conectionManager.getActiveNetworkInfo();
+            if (networkInfo != null && networkInfo.isConnected()) {
+                isConnected = true;
+            } else {
+                isConnected = false;
+            }
+        } catch (Exception e) {
+            isConnected = false;
+            printtCatch(e, "Network_Connected", TAG);
 
-        ConnectivityManager conectionManager = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = conectionManager.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            return true;
-        } else {
-            return false;
         }
+
+        return isConnected;
     }
 }

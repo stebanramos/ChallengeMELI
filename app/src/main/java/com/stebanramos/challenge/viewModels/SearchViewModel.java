@@ -17,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.stebanramos.challenge.models.Product;
+import com.stebanramos.challenge.utilies.Utils;
 import com.stebanramos.challenge.utilies.VolleySingleton;
 
 import org.json.JSONArray;
@@ -56,60 +57,67 @@ public class SearchViewModel extends ViewModel {
     }
 
     private void loadData(final Context context) {
-        mQueue = VolleySingleton.getInstance(context).getRequestQueue();
-        Uri baseUri = Uri.parse(SEARCH_PRODCUTS_URL);
-        Uri.Builder builder = baseUri.buildUpon();
+        Log.d(TAG, "loadData()");
 
-        builder.appendQueryParameter("q", searchInput.getValue());
+        try {
+            mQueue = VolleySingleton.getInstance(context).getRequestQueue();
+            Uri baseUri = Uri.parse(SEARCH_PRODCUTS_URL);
+            Uri.Builder builder = baseUri.buildUpon();
 
-        Log.d(TAG, "loadData() uri " + builder);
+            builder.appendQueryParameter("q", searchInput.getValue());
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, builder.toString(), null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            //progressBar.setVisibility(View.GONE);
-                            //get the array called results
-                            JSONArray results = response.getJSONArray("results");
-                            Log.d(TAG, "loadData() onResponse " + results);
+            Log.d(TAG, "loadData() uri " + builder);
 
-                            //iterate in every object inside the array
-                            for (int i = 0; i < results.length(); i++) {
-                                JSONObject products = results.getJSONObject(i);
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, builder.toString(), null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                //progressBar.setVisibility(View.GONE);
+                                //get the array called results
+                                JSONArray results = response.getJSONArray("results");
+                                Log.d(TAG, "loadData() onResponse " + results);
 
-                                Log.d(TAG, "loadData() onResponse " + results.getJSONObject(i));
+                                //iterate in every object inside the array
+                                for (int i = 0; i < results.length(); i++) {
+                                    JSONObject products = results.getJSONObject(i);
+
+                                    Log.d(TAG, "loadData() onResponse " + results.getJSONObject(i));
 
 
-                                id = products.getString("id");
-                                title = products.getString("title");
-                                price = products.getString("price");
-                                available_quantity = products.getString("available_quantity");
-                                condition = products.getString("condition");
-                                permalink = products.getString("permalink");
-                                thumbnail = products.getString("thumbnail");
-                                attributes = products.getString("attributes");
-                                category_id = products.getString("category_id");
-                                installments = products.getJSONObject("installments");
-                                free_shipping = products.getJSONObject("shipping").getBoolean("free_shipping");
+                                    id = products.getString("id");
+                                    title = products.getString("title");
+                                    price = products.getString("price");
+                                    available_quantity = products.getString("available_quantity");
+                                    condition = products.getString("condition");
+                                    permalink = products.getString("permalink");
+                                    thumbnail = products.getString("thumbnail");
+                                    attributes = products.getString("attributes");
+                                    category_id = products.getString("category_id");
+                                    installments = products.getJSONObject("installments");
+                                    free_shipping = products.getJSONObject("shipping").getBoolean("free_shipping");
 
-                                productList.add(new Product(id, title, price, available_quantity, condition, permalink, thumbnail, attributes, category_id, installments, free_shipping));
+                                    productList.add(new Product(id, title, price, available_quantity, condition, permalink, thumbnail, attributes, category_id, installments, free_shipping));
+                                }
+                                muProductList.setValue(productList);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                            muProductList.setValue(productList);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        //just print the error and notify the user for some technical problems
-                        error.printStackTrace();
-                        Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            //just print the error and notify the user for some technical problems
+                            error.printStackTrace();
+                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
-        mQueue.add(request);
+            mQueue.add(request);
+        } catch (Exception e) {
+            Utils.printtCatch(e, "loadData", TAG);
+        }
+
     }
 }

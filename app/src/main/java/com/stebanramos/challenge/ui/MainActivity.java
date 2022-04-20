@@ -45,29 +45,33 @@ public class MainActivity extends AppCompatActivity {
 
     private void configView() {
         Log.d(TAG, " configView()");
+        try {
+            etSearch = binding.etSearch;
+            etSearch.requestFocus();
+            etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
 
-        etSearch = binding.etSearch;
-        etSearch.requestFocus();
-        etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                        if (Utils.Network_Connected(MainActivity.this)) {
+                            Intent intent = new Intent(context, SearchActivity.class);
+                            Preferences.Set_str(MainActivity.this, "search", etSearch.getText().toString());
+                            Log.d(TAG, "configView() search " + etSearch.getText());
 
-                    if (Utils.Network_Connected(MainActivity.this)) {
-                        Intent intent = new Intent(context, SearchActivity.class);
-                        Preferences.Set_str(MainActivity.this, "search", etSearch.getText().toString());
-                        Log.d(TAG, "configView() search " + etSearch.getText());
+                            startActivity(intent);
 
-                        startActivity(intent);
+                            return true;
+                        } else {
+                            Utils.Request_Internet(context);
+                        }
 
-                        return true;
-                    } else {
-                        Utils.Request_Internet(context);
                     }
-
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
+        } catch (Exception e) {
+            Utils.printtCatch(e, "configView", TAG);
+        }
+
     }
 }

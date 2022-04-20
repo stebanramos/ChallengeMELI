@@ -19,6 +19,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.stebanramos.challenge.databinding.ActivityDetailsBinding;
 import com.stebanramos.challenge.models.Item;
 import com.stebanramos.challenge.models.Product;
+import com.stebanramos.challenge.utilies.Utils;
 import com.stebanramos.challenge.viewModels.DetailsViewModel;
 import com.stebanramos.challenge.viewModels.SearchViewModel;
 
@@ -44,21 +45,26 @@ public class DetailsActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate()");
 
-        DetailsViewModel detailsViewModel = ViewModelProviders.of(this).get(DetailsViewModel.class);
-        detailsViewModel.getData(this).observe(this, new Observer<Item>() {
-            @Override
-            public void onChanged(@Nullable Item liveItem) {
-                item = liveItem;
-                configView();
-            }
-        });
+        try {
+            DetailsViewModel detailsViewModel = ViewModelProviders.of(this).get(DetailsViewModel.class);
+            detailsViewModel.getData(this).observe(this, new Observer<Item>() {
+                @Override
+                public void onChanged(@Nullable Item liveItem) {
+                    item = liveItem;
+                    configView();
+                }
+            });
 
-        detailsViewModel.getDescription(this).observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String liveDesc) {
-                binding.tvDescription.setText(liveDesc);
-            }
-        });
+            detailsViewModel.getDescription(this).observe(this, new Observer<String>() {
+                @Override
+                public void onChanged(@Nullable String liveDesc) {
+                    binding.tvDescription.setText(liveDesc);
+                }
+            });
+        }catch(Exception e){
+            Utils.printtCatch(e, "onCreate", TAG);
+        }
+
 
     }
 
@@ -97,7 +103,6 @@ public class DetailsActivity extends AppCompatActivity {
 
 
         } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            Utils.printtCatch(e, "configView", TAG);        }
     }
 }

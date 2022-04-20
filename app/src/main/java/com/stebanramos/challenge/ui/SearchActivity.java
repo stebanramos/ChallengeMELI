@@ -49,30 +49,35 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
-    private void initComponents(){
+    private void initComponents() {
+        Log.d(TAG, " initComponents()");
 
-        if (Utils.Network_Connected(this)) {
-            initRecyclerView();
-            SearchViewModel searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
-            searchViewModel.setSearchInput(Preferences.Get_str(this, "search"));
-            searchViewModel.getData(this).observe(this, new Observer<List<Product>>() {
-                @Override
-                public void onChanged(@Nullable List<Product> productsList) {
-                    if (productsList != null && productsList.size() > 0) {
-                        binding.searchProgress.setVisibility(View.GONE);
+        try {
+            if (Utils.Network_Connected(this)) {
+                initRecyclerView();
+                SearchViewModel searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
+                searchViewModel.setSearchInput(Preferences.Get_str(this, "search"));
+                searchViewModel.getData(this).observe(this, new Observer<List<Product>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Product> productsList) {
+                        if (productsList != null && productsList.size() > 0) {
+                            binding.searchProgress.setVisibility(View.GONE);
 
+                        }
+                        setUpRecyclerView(productsList);
                     }
-                    setUpRecyclerView(productsList);
-                }
-            });
-            searchViewModel.searchInput.observe(this, new Observer<String>() {
-                @Override
-                public void onChanged(@Nullable String s) {
-                    Log.d(TAG, "onChanged: the new search value is : " + s);
-                }
-            });
-        } else {
-            showSplashFailConnection();
+                });
+                searchViewModel.searchInput.observe(this, new Observer<String>() {
+                    @Override
+                    public void onChanged(@Nullable String s) {
+                        Log.d(TAG, "onChanged: the new search value is : " + s);
+                    }
+                });
+            } else {
+                showSplashFailConnection();
+            }
+        } catch (Exception e) {
+            Utils.printtCatch(e, "initComponents", TAG);
         }
 
     }
@@ -81,62 +86,82 @@ public class SearchActivity extends AppCompatActivity {
 
         Log.d(TAG, " initRecyclerView()");
 
-        binding.searchRecyclerView.setHasFixedSize(true);
-        binding.searchRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        try {
+            binding.searchRecyclerView.setHasFixedSize(true);
+            binding.searchRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        } catch (Exception e) {
+            Utils.printtCatch(e, "initRecyclerView", TAG);
+
+        }
+
     }
 
     private void setUpRecyclerView(final List<Product> products) {
 
         Log.d(TAG, " setUpRecyclerView()");
 
-        //then we set up the adapter with our filled list and set it to the recycler view
-        ProductsAdapter adapter = new ProductsAdapter(SearchActivity.this, (ArrayList<Product>) products);
-        binding.searchRecyclerView.setAdapter(adapter);
+        try {
+            //then we set up the adapter with our filled list and set it to the recycler view
+            ProductsAdapter adapter = new ProductsAdapter(SearchActivity.this, (ArrayList<Product>) products);
+            binding.searchRecyclerView.setAdapter(adapter);
 
-        adapter.setOnItemClickListener(new ProductsAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position, Product product, ImageView imageView) {
+            adapter.setOnItemClickListener(new ProductsAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(int position, Product product, ImageView imageView) {
 
-                Product currentProduct = products.get(position);
+                    Product currentProduct = products.get(position);
 
-                Preferences.Set_str(getApplicationContext(), "itemId", currentProduct.getId());
+                    Preferences.Set_str(getApplicationContext(), "itemId", currentProduct.getId());
 
-                //go Web View MELI
+                    //go Web View MELI
                 /*Product currentProduct = products.get(position);
                 Intent intent = new Intent(SearchActivity.this, DetailsWebView.class);
                 intent.putExtra("permalink", currentProduct.getPermalink());*/
 
-                Intent intent = new Intent(SearchActivity.this, DetailsActivity.class);
-                intent.putExtra("transition_name", ViewCompat.getTransitionName(imageView));
+                    Intent intent = new Intent(SearchActivity.this, DetailsActivity.class);
+                    intent.putExtra("transition_name", ViewCompat.getTransitionName(imageView));
 
-                ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        SearchActivity.this, imageView, ViewCompat.getTransitionName(imageView)
-                );
+                    ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                            SearchActivity.this, imageView, ViewCompat.getTransitionName(imageView)
+                    );
 
-                startActivity(intent, optionsCompat.toBundle());
-            }
-        });
+                    startActivity(intent, optionsCompat.toBundle());
+                }
+            });
+        } catch (Exception e) {
+            Utils.printtCatch(e, "setUpRecyclerView", TAG);
+
+        }
+
 
     }
 
     private void showSplashFailConnection() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View view = LayoutInflater.from(this).inflate(R.layout.layout_fail_connection, null);
-        builder.setView(view);
+        Log.d(TAG, " showSplashFailConnection()");
 
-        Button btnTryAgain = view.findViewById(R.id.btnTryAgain);
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            View view = LayoutInflater.from(this).inflate(R.layout.layout_fail_connection, null);
+            builder.setView(view);
 
-        AlertDialog alertDialog = builder.create();
+            Button btnTryAgain = view.findViewById(R.id.btnTryAgain);
 
-        btnTryAgain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                initComponents();
-                alertDialog.dismiss();
-            }
-        });
+            AlertDialog alertDialog = builder.create();
 
-        alertDialog.show();
+            btnTryAgain.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    initComponents();
+                    alertDialog.dismiss();
+                }
+            });
+
+            alertDialog.show();
+        }catch (Exception e){
+            Utils.printtCatch(e, "showSplashFailConnection", TAG);
+
+        }
+
 
     }
 }
