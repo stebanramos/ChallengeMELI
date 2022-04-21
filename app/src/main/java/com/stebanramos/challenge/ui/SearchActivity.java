@@ -18,6 +18,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -50,6 +51,7 @@ public class SearchActivity extends AppCompatActivity {
         Log.d(TAG, " onCreate()");
 
         initComponents();
+        binding.etSearch.clearFocus();
 
     }
 
@@ -93,13 +95,15 @@ public class SearchActivity extends AppCompatActivity {
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                         if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                             searchViewModel.setSearchInput(binding.etSearch.getText().toString(), SearchActivity.this);
-
+                            binding.etSearch.clearFocus();
+                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(binding.etSearch.getWindowToken(), 0);
                         }
                         return false;
                     }
                 });
 
-                binding.etSearch.clearFocus();
+
             } else {
                 showSplashFailConnection();
             }
