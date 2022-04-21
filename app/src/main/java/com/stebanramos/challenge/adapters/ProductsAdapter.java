@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ProductsViewHolder> {
 
-    private ArrayList<Product> productsList;
+    private ArrayList<Product> dataSet;
     private Context context;
     private OnItemClickListener mListener;
     private final String TAg = "";
@@ -39,30 +39,43 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         this.mListener = listener;
     }
 
-    public ProductsAdapter(Context context, ArrayList<Product> list) {
+    /**
+     * Initialize the dataset of the Adapter.
+     *
+     * @param dataSet ArrayList<Product> containing the data to populate views to be used
+     * @param context Context
+     * by RecyclerView.
+     */
+    public ProductsAdapter(Context context, ArrayList<Product> dataSet) {
         this.context = context;
-        this.productsList = list;
+        this.dataSet = dataSet;
 
     }
 
+    // Create new views (invoked by the layout manager)
     @NonNull
     @Override
     public ProductsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        // Create a new view, which defines the UI of the list item
+
         View view = LayoutInflater.from(context).inflate(R.layout.products_item, viewGroup, false);
         return new ProductsViewHolder(view, mListener);
     }
 
+    // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(@NonNull final ProductsViewHolder productsViewHolder, int position) {
 
         try {
-            Product currentItem = productsList.get(position);
+            // Get element from your dataset at this position and replace the
+            // contents of the view with that element
+
+            Product currentItem = dataSet.get(position);
 
             String productImageUrl = currentItem.getThumbnail();
             String productTittle = currentItem.getTitle();
             productsViewHolder.tv_products_tittle.setText(productTittle);
             productsViewHolder.tv_products_price.setText(currentItem.getPrice());
-            //Picasso.get().load(newsImageUrl).centerCrop().fit().into(newsViewHolder.newsImageView);
 
             if (productImageUrl.startsWith("http://"))
                 productImageUrl = productImageUrl.replace("http://", "https://");
@@ -88,11 +101,16 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
 
     }
 
+    // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return productsList.size();
+        return dataSet.size();
     }
 
+    /**
+     * Provide a reference to the type of views that you are using
+     * (custom ViewHolder).
+     */
     public class ProductsViewHolder extends RecyclerView.ViewHolder {
 
         public ImageView iv_products_image;
@@ -102,7 +120,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
 
         public ProductsViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
-
+            // Define click listener for the ViewHolder's View
             iv_products_image = itemView.findViewById(R.id.iv_products_image);
             tv_products_tittle = itemView.findViewById(R.id.tv_products_tittle);
             tv_products_price = itemView.findViewById(R.id.tv_products_price);
@@ -115,9 +133,9 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
                     try {
                         if (listener != null) {
                             int position = getAdapterPosition();
-                            ViewCompat.setTransitionName(iv_products_image, productsList.get(position).getTitle());
+                            ViewCompat.setTransitionName(iv_products_image, dataSet.get(position).getTitle());
                             if (position != RecyclerView.NO_POSITION) {
-                                listener.onItemClick(position, productsList.get(position), iv_products_image);
+                                listener.onItemClick(position, dataSet.get(position), iv_products_image);
                             }
                         }
                     } catch (Exception e) {

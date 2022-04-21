@@ -39,7 +39,6 @@ public class SearchViewModel extends ViewModel {
     private JSONObject installments;
     private boolean free_shipping;
 
-    private RequestQueue mQueue;
     private List<Product> productList = new ArrayList<>();
     public MutableLiveData<String> searchInput = new MutableLiveData<>();
     private MutableLiveData<List<Product>> muProductList;
@@ -54,12 +53,14 @@ public class SearchViewModel extends ViewModel {
         return muProductList;
     }
 
+    //update the value of the search field
     public void setSearchInput(String result) {
         Log.d(TAG, "setSearchInput()");
 
         searchInput.setValue(result);
     }
 
+    // Do an asynchronous operation to fetch products.
     private void loadData(final Context context) {
         Log.d(TAG, "loadData()");
 

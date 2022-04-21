@@ -20,7 +20,13 @@ public class GsonRequest<T> extends Request<T> {
     private final Response.Listener<T> listener;
 
     /**
-     * Se predefine para el uso de peticiones GET
+     * It is predefined for the use of GET requests
+     *
+     * @param url           String api urls
+     * @param clazz         Class<T> response object class
+     * @param headers       Map<String, String> token authentication
+     * @param listener      Response.Listener<T> listener response request
+     * @param errorListener Response.ErrorListener errorListener error response request
      */
     public GsonRequest(String url, Class<T> clazz, Map<String, String> headers,
                        Response.Listener<T> listener, Response.ErrorListener errorListener) {

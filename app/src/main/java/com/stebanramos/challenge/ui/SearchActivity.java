@@ -43,6 +43,7 @@ public class SearchActivity extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
+
         Log.d(TAG, " onCreate()");
 
         initComponents();
@@ -55,11 +56,15 @@ public class SearchActivity extends AppCompatActivity {
         try {
             if (Utils.Network_Connected(this)) {
                 initRecyclerView();
+                // Create a ViewModel the first time the system calls an activity's onCreate() method.
+                // Re-created activities receive the same DetailsViewModel instance created by the first activity.
                 SearchViewModel searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
                 searchViewModel.setSearchInput(Preferences.Get_str(this, "search"));
                 searchViewModel.getData(this).observe(this, new Observer<List<Product>>() {
                     @Override
                     public void onChanged(@Nullable List<Product> productsList) {
+                        // update UI
+
                         if (productsList != null && productsList.size() > 0) {
                             binding.searchProgress.setVisibility(View.GONE);
 
@@ -113,11 +118,6 @@ public class SearchActivity extends AppCompatActivity {
 
                     Preferences.Set_str(getApplicationContext(), "itemId", currentProduct.getId());
 
-                    //go Web View MELI
-                /*Product currentProduct = products.get(position);
-                Intent intent = new Intent(SearchActivity.this, DetailsWebView.class);
-                intent.putExtra("permalink", currentProduct.getPermalink());*/
-
                     Intent intent = new Intent(SearchActivity.this, DetailsActivity.class);
                     intent.putExtra("transition_name", ViewCompat.getTransitionName(imageView));
 
@@ -151,6 +151,7 @@ public class SearchActivity extends AppCompatActivity {
             btnTryAgain.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
                     initComponents();
                     alertDialog.dismiss();
                 }

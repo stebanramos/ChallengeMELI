@@ -45,11 +45,15 @@ public class DetailsActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate()");
 
+        // Create a ViewModel the first time the system calls an activity's onCreate() method.
+        // Re-created activities receive the same DetailsViewModel instance created by the first activity.
+
         try {
             DetailsViewModel detailsViewModel = ViewModelProviders.of(this).get(DetailsViewModel.class);
             detailsViewModel.getData(this).observe(this, new Observer<Item>() {
                 @Override
                 public void onChanged(@Nullable Item liveItem) {
+                    // update UI
                     item = liveItem;
                     configView();
                 }
@@ -58,6 +62,7 @@ public class DetailsActivity extends AppCompatActivity {
             detailsViewModel.getDescription(this).observe(this, new Observer<String>() {
                 @Override
                 public void onChanged(@Nullable String liveDesc) {
+                    // update UI item description
                     binding.tvDescription.setText(liveDesc);
                 }
             });

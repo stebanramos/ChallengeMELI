@@ -48,11 +48,13 @@ public class MainActivity extends AppCompatActivity {
         try {
             etSearch = binding.etSearch;
             etSearch.requestFocus();
+            //search keyboard action
             etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                     if (actionId == EditorInfo.IME_ACTION_SEARCH) {
 
+                        //validate internet connection
                         if (Utils.Network_Connected(MainActivity.this)) {
                             Intent intent = new Intent(context, SearchActivity.class);
                             Preferences.Set_str(MainActivity.this, "search", etSearch.getText().toString());

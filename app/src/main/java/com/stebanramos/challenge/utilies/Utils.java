@@ -14,12 +14,13 @@ public class Utils {
 
     private static final String TAG = "Utils";
 
+    // show exception catch
     public static void printtCatch(Exception e, String funcion, String activity) {
         Log.i(activity, funcion);
         e.printStackTrace();
     }
 
-    // Mensaje Sin conexión a internet (Redirecciona hasta ajustes de red ACTION_WIFI_SETTINGS)
+    // Internet connection message (Redirects to network settings ACTION_WIFI_SETTINGS)
     public static void Request_Internet(Context context) {
         Log.i(TAG, "Network_Connected");
 
@@ -44,7 +45,7 @@ public class Utils {
 
     }
 
-    // Estado Internet(Conectado a la red (true) sin conexión (false))
+    // Internet Status(Connected to the network (true) Offline (false))
     public static Boolean Network_Connected(Context ctx) {
         Log.i(TAG, "Network_Connected");
         boolean isConnected;

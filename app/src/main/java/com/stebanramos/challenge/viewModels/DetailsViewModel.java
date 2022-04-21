@@ -34,7 +34,6 @@ public class DetailsViewModel extends ViewModel {
 
     private static final String TAG = "SearchViewModel";
 
-    private RequestQueue mQueue;
     private MutableLiveData<Item> muItem;
     private MutableLiveData<String> description;
 
@@ -62,6 +61,7 @@ public class DetailsViewModel extends ViewModel {
         return description;
     }
 
+    // Do an asynchronous operation to fetch items.
     private void loadData(final Context context) {
         Log.d(TAG, "loadData()");
 
@@ -108,6 +108,8 @@ public class DetailsViewModel extends ViewModel {
         }
 
     }
+
+    // Do an asynchronous operation to fetch item description.
 
     private void loadDescription(final Context context) {
         Log.d(TAG, "loadDescription()");
