@@ -14,12 +14,10 @@ public class Product{
     private String condition;
     private String permalink;
     private String thumbnail;
-    private String attributes;
     private String category_id;
-    private JSONObject installments;
     private boolean free_shipping;
 
-    public Product(String id, String title, String price, String available_quantity, String condition, String permalink, String thumbnail, String attributes, String category_id, JSONObject installments, boolean free_shipping) {
+    public Product(String id, String title, String price, String available_quantity, String condition, String permalink, String thumbnail, String category_id, boolean free_shipping) {
         this.id = id;
         this.title = title;
         this.price = price;
@@ -27,9 +25,7 @@ public class Product{
         this.condition = condition;
         this.permalink = permalink;
         this.thumbnail = thumbnail;
-        this.attributes = attributes;
         this.category_id = category_id;
-        this.installments = installments;
         this.free_shipping = free_shipping;
     }
 
@@ -89,28 +85,12 @@ public class Product{
         this.thumbnail = thumbnail;
     }
 
-    public String getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(String attributes) {
-        this.attributes = attributes;
-    }
-
     public String getCategory_id() {
         return category_id;
     }
 
     public void setCategory_id(String category_id) {
         this.category_id = category_id;
-    }
-
-    public JSONObject getInstallments() {
-        return installments;
-    }
-
-    public void setInstallments(JSONObject installments) {
-        this.installments = installments;
     }
 
     public boolean isFree_shipping() {
@@ -121,21 +101,4 @@ public class Product{
         this.free_shipping = free_shipping;
     }
 
-
-    @Override
-    public String toString() {
-        return "Product{" +
-                "id='" + id + '\'' +
-                ", title='" + title + '\'' +
-                ", price='" + price + '\'' +
-                ", available_quantity='" + available_quantity + '\'' +
-                ", condition='" + condition + '\'' +
-                ", permalink='" + permalink + '\'' +
-                ", thumbnail='" + thumbnail + '\'' +
-                ", attributes='" + attributes + '\'' +
-                ", category_id='" + category_id + '\'' +
-                ", installments=" + installments +
-                ", free_shipping=" + free_shipping +
-                '}';
-    }
 }

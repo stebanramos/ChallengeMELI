@@ -14,10 +14,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.stebanramos.challenge.R;
 import com.stebanramos.challenge.adapters.ProductsAdapter;
@@ -59,8 +62,8 @@ public class SearchActivity extends AppCompatActivity {
                 // Create a ViewModel the first time the system calls an activity's onCreate() method.
                 // Re-created activities receive the same DetailsViewModel instance created by the first activity.
                 SearchViewModel searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
-                searchViewModel.setSearchInput(Preferences.Get_str(this, "search"));
-                searchViewModel.getData(this).observe(this, new Observer<List<Product>>() {
+                searchViewModel.setSearchInput(Preferences.Get_str(this, "search"), this);
+                searchViewModel.getData().observe(this, new Observer<List<Product>>() {
                     @Override
                     public void onChanged(@Nullable List<Product> productsList) {
                         // update UI
@@ -78,6 +81,20 @@ public class SearchActivity extends AppCompatActivity {
                         Log.d(TAG, "onChanged: the new search value is : " + s);
                     }
                 });
+
+                //search keyboard action
+                binding.etSearch.clearFocus();
+                binding.etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                            searchViewModel.setSearchInput(binding.etSearch.getText().toString(), SearchActivity.this);
+
+                        }
+                        return false;
+                    }
+                });
+
             } else {
                 showSplashFailConnection();
             }

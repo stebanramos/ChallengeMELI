@@ -35,8 +35,7 @@ public class SearchViewModel extends ViewModel {
 
     private static final String TAG = "SearchViewModel";
 
-    private String id, title, price, available_quantity, condition, permalink, thumbnail, attributes, category_id;
-    private JSONObject installments;
+    private String id, title, price, available_quantity, condition, permalink, thumbnail, category_id;
     private boolean free_shipping;
 
     private RequestQueue mQueue;
@@ -44,21 +43,22 @@ public class SearchViewModel extends ViewModel {
     public MutableLiveData<String> searchInput = new MutableLiveData<>();
     private MutableLiveData<List<Product>> muProductList;
 
-    public LiveData<List<Product>> getData(Context context) {
+    public LiveData<List<Product>> getData() {
         Log.d(TAG, "getData()");
 
         if (muProductList == null) {
             muProductList = new MutableLiveData<>();
-            loadData(context);
+
         }
         return muProductList;
     }
 
     //update the value of the search field
-    public void setSearchInput(String result) {
+    public void setSearchInput(String result, Context context) {
         Log.d(TAG, "setSearchInput()");
 
         searchInput.setValue(result);
+        loadData(context);
     }
 
     // Do an asynchronous operation to fetch products.
@@ -98,12 +98,10 @@ public class SearchViewModel extends ViewModel {
                                     condition = products.getString("condition");
                                     permalink = products.getString("permalink");
                                     thumbnail = products.getString("thumbnail");
-                                    attributes = products.getString("attributes");
                                     category_id = products.getString("category_id");
-                                    installments = products.getJSONObject("installments");
                                     free_shipping = products.getJSONObject("shipping").getBoolean("free_shipping");
 
-                                    productList.add(new Product(id, title, price, available_quantity, condition, permalink, thumbnail, attributes, category_id, installments, free_shipping));
+                                    productList.add(new Product(id, title, price, available_quantity, condition, permalink, thumbnail, category_id, free_shipping));
                                 }
                                 muProductList.setValue(productList);
                             } catch (JSONException e) {

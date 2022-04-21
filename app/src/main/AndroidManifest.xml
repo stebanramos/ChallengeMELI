@@ -17,7 +17,8 @@
             android:exported="false" />
         <activity
             android:name=".ui.SearchActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"

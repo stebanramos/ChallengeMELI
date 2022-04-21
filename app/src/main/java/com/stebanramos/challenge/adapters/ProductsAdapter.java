@@ -75,7 +75,11 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
             String productImageUrl = currentItem.getThumbnail();
             String productTittle = currentItem.getTitle();
             productsViewHolder.tv_products_tittle.setText(productTittle);
-            productsViewHolder.tv_products_price.setText(currentItem.getPrice());
+            productsViewHolder.tv_products_price.setText("$ "+currentItem.getPrice());
+
+            if(currentItem.isFree_shipping()){
+                productsViewHolder.tv_free.setText("Envio gratis");
+            }
 
             if (productImageUrl.startsWith("http://"))
                 productImageUrl = productImageUrl.replace("http://", "https://");
@@ -116,6 +120,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         public ImageView iv_products_image;
         public TextView tv_products_tittle;
         public TextView tv_products_price;
+        public TextView tv_free;
         public ProgressBar products_progress_bar;
 
         public ProductsViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
@@ -124,6 +129,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
             iv_products_image = itemView.findViewById(R.id.iv_products_image);
             tv_products_tittle = itemView.findViewById(R.id.tv_products_tittle);
             tv_products_price = itemView.findViewById(R.id.tv_products_price);
+            tv_free = itemView.findViewById(R.id.tv_free);
             products_progress_bar = itemView.findViewById(R.id.products_progress_bar);
 
 
