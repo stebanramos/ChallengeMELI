@@ -97,6 +97,7 @@ public class DetailsViewModel extends ViewModel {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
                                     Log.d(TAG, "Error Volley:" + error.getMessage());
+                                    error.printStackTrace();
                                 }
                             }
                     )
@@ -112,39 +113,35 @@ public class DetailsViewModel extends ViewModel {
         Log.d(TAG, "loadDescription()");
 
         try {
-            mQueue = VolleySingleton.getInstance(context).getRequestQueue();
-            Uri baseUri = Uri.parse(SEARCH_ITEM_URL + Preferences.Get_str(context, "itemId") + "/description");
-            Uri.Builder builder = baseUri.buildUpon();
+            VolleySingleton.getInstance(context).addToRequestQueue(
 
-            //builder.appendQueryParameter("", "MCO599728938/description");
+                    new GsonRequest<JSONObject>(SEARCH_ITEM_URL + Preferences.Get_str(context, "itemId") + "/description",
+                            null,
+                            null,
+                            new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    try {
+                                        Log.d(TAG, "loadDescription() onResponse " + response);
+                                        String results = response.get("plain_text").toString();
+                                        Log.d(TAG, "loadDescription() onResponse " + results);
+                                        description.setValue(results);
 
-            Log.d(TAG, "loadDescription() uri " + builder);
-
-            JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, builder.toString(), null,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            try {
-                                Log.d(TAG, "loadData() onResponse " + response);
-                                String results = response.get("plain_text").toString();
-                                Log.d(TAG, "loadData() onResponse " + results);
-                                description.setValue(results);
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.d(TAG, "Error Volley:" + error.getMessage());
+                                    error.printStackTrace();
+                                }
                             }
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            //just print the error and notify the user for some technical problems
-                            error.printStackTrace();
-                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    )
 
-            mQueue.add(request);
+            );
         } catch (Exception e) {
             Utils.printtCatch(e, "loadData", TAG);
         }
