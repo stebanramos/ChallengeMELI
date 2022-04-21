@@ -63,18 +63,23 @@ public class SearchActivity extends AppCompatActivity {
                 // Re-created activities receive the same DetailsViewModel instance created by the first activity.
                 SearchViewModel searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
                 searchViewModel.setSearchInput(Preferences.Get_str(this, "search"), this);
-                searchViewModel.getData().observe(this, new Observer<List<Product>>() {
+
+                Observer<List<Product>> observer = new Observer<List<Product>>(){
+
                     @Override
-                    public void onChanged(@Nullable List<Product> productsList) {
+                    public void onChanged(List<Product> products) {
                         // update UI
 
-                        if (productsList != null && productsList.size() > 0) {
+                        if (products != null && products.size() > 0) {
                             binding.searchProgress.setVisibility(View.GONE);
 
                         }
-                        setUpRecyclerView(productsList);
+                        setUpRecyclerView(products);
                     }
-                });
+                };
+
+                searchViewModel.getData().observe(this,observer);
+
                 searchViewModel.searchInput.observe(this, new Observer<String>() {
                     @Override
                     public void onChanged(@Nullable String s) {
@@ -83,7 +88,6 @@ public class SearchActivity extends AppCompatActivity {
                 });
 
                 //search keyboard action
-                binding.etSearch.clearFocus();
                 binding.etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                     @Override
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -95,6 +99,7 @@ public class SearchActivity extends AppCompatActivity {
                     }
                 });
 
+                binding.etSearch.clearFocus();
             } else {
                 showSplashFailConnection();
             }
@@ -125,6 +130,7 @@ public class SearchActivity extends AppCompatActivity {
         try {
             //then we set up the adapter with our filled list and set it to the recycler view
             ProductsAdapter adapter = new ProductsAdapter(SearchActivity.this, (ArrayList<Product>) products);
+            adapter.notifyDataSetChanged();
             binding.searchRecyclerView.setAdapter(adapter);
 
             adapter.setOnItemClickListener(new ProductsAdapter.OnItemClickListener() {

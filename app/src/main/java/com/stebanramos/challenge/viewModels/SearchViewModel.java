@@ -39,17 +39,15 @@ public class SearchViewModel extends ViewModel {
     private boolean free_shipping;
 
     private RequestQueue mQueue;
-    private List<Product> productList = new ArrayList<>();
+    private List<Product> productList;
     public MutableLiveData<String> searchInput = new MutableLiveData<>();
     private MutableLiveData<List<Product>> muProductList;
 
     public LiveData<List<Product>> getData() {
         Log.d(TAG, "getData()");
 
-        if (muProductList == null) {
-            muProductList = new MutableLiveData<>();
+        muProductList = new MutableLiveData<>();
 
-        }
         return muProductList;
     }
 
@@ -66,6 +64,7 @@ public class SearchViewModel extends ViewModel {
         Log.d(TAG, "loadData()");
 
         try {
+            productList = new ArrayList<>();
             mQueue = VolleySingleton.getInstance(context).getRequestQueue();
             Uri baseUri = Uri.parse(SEARCH_PRODCUTS_URL);
             Uri.Builder builder = baseUri.buildUpon();
